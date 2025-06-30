@@ -1,26 +1,19 @@
-
-
 /******************************** A D D   I N B E T W E E N  ***************************/
 /*
 
 	Author : Alexandre Cormier 
-	Compatible : ToonBoom 20 
+	Compatible : ToonBoom 20 & 22
 	version : 1.2
 	Creation Date : 14_11_2020
 	Licence : Mozilla Public License Version 2.0
 
-
-	Adds a key between two keyframes with  interpolation factor. 
-
+	Adds a key between two keyframes with  interpolation factor.
 
 */
 
-
 function AL_AddInBetween(){
 
-	//MessageLog.trace(arguments.callee.name)
-
-	scene.beginUndoRedoAccum("AL_PurgePalettesFiles");
+	scene.beginUndoRedoAccum("between");
 	
 	InputDialog();
 	
@@ -39,67 +32,73 @@ function AL_AddInBetween(){
 		 OrderInput.itemList = [5,10,20,30,40,50,60,70,80,90,95];
 		d.add( OrderInput );
 
-
 		if ( d.exec() ){	
 		
 			var pourcentage = OrderInput.currentItem
-	
 			AddInBetween_process(pourcentage)
-
-		}
-		
+		}	
 	}
-	
-	
 }	
-
-
 
 /* FOR SEPARATED BUTTONS : */
 
-function tween_10(){
-	AddInBetween_process(10);
+function tween_minus40(){
+	AddInBetween_process(-40);
 }
-
-
-
-function tween_20(){
-	AddInBetween_process(20);
-}
-
-
-function tween_30(){
-	AddInBetween_process(30);
-}
-
-function tween_50(){
-	AddInBetween_process(50);
-}
-
-function tween_70(){
-	AddInBetween_process(70);
-}
-
-function tween_80(){
-	AddInBetween_process(80);
-}
-
-function tween_90(){
-	AddInBetween_process(90);
-}
-
-
-function tween_120(){
-	AddInBetween_process(120);
-}
-
-
 function tween_minus30(){
 	AddInBetween_process(-30);
 }
-
-
-
+function tween_minus20(){
+	AddInBetween_process(-20);
+}
+function tween_minus10(){
+	AddInBetween_process(-10);
+}
+function tween_0(){
+	AddInBetween_process(0);
+}
+function tween_10(){
+	AddInBetween_process(10);
+}
+function tween_20(){
+	AddInBetween_process(20);
+}
+function tween_30(){
+	AddInBetween_process(30);
+}
+function tween_40(){
+	AddInBetween_process(40);
+}
+function tween_50(){
+	AddInBetween_process(50);
+}
+function tween_60(){
+	AddInBetween_process(60);
+}
+function tween_70(){
+	AddInBetween_process(70);
+}
+function tween_80(){
+	AddInBetween_process(80);
+}
+function tween_90(){
+	AddInBetween_process(90);
+}
+function tween_100(){
+	AddInBetween_process(100);
+}
+function tween_110(){
+	AddInBetween_process(110);
+}
+function tween_120(){
+	AddInBetween_process(120);
+}
+function tween_130(){
+	AddInBetween_process(130);
+}
+function tween_140(){
+	AddInBetween_process(140);
+}
 
 function AddInBetween_process(POURCENTAGE){
 	
@@ -108,21 +107,21 @@ function AddInBetween_process(POURCENTAGE){
 	var selected_nodes = selection.selectedNodes(0);
 	var CURRENT_FRAME = frame.current();
 	var numSelLayers = Timeline.numLayerSel;
-	
-	
+		
 	var nodes_to_treat = Array();
 	var columns_to_treat = Array();
-	
-	var float_factor = 100/parseFloat(POURCENTAGE)
 
-	
+
+	var float_factor = 100/parseFloat(POURCENTAGE)
+		if (float_factor === 2) {
+		float_factor = 2.001
+	}
 	nodes_to_treat = selected_layers_to_nodes();
 	nodes_to_treat = filter_nodes_by_type(nodes_to_treat,["PEG","CurveModule","OffsetModule","BendyBoneModule","FreeFormDeformation"])
 	columns_to_treat = fetch_colummns(nodes_to_treat)
 	columns_to_treat = filter_columns_by_type(columns_to_treat,["3DPATH","BEZIER","EASE","QUATERNIONPATH"]) // not supported : "QUATERNIONPATH"
 
-	scene.beginUndoRedoAccum("AL_PurgePalettesFiles");
-
+	scene.beginUndoRedoAccum("between");
 	treat_columns(frame.current(),columns_to_treat,float_factor);
 	
 	scene.endUndoRedoAccum();	
@@ -136,20 +135,15 @@ function AddInBetween_process(POURCENTAGE){
 	function selected_layers_to_nodes(){
 		
 		//MessageLog.trace(arguments.callee.name)
-		
 		node_list = Array();
-		
 		var numSelLayers = Timeline.numLayerSel;
-		
 		for ( var i = 0; i < numSelLayers; i++ )
 		{
 			if ( Timeline.selIsNode( i ) ){
 				node_list.push(Timeline.selToNode(i));
 			}
 		}
-
 		return unique_array(node_list);
-		
 	}
 
 	function filter_nodes_by_type(nodes_list,relevant_types){
@@ -174,9 +168,7 @@ function AddInBetween_process(POURCENTAGE){
 
 					var sub_node= node.subNode(currentGroup,sn);
 					nodes_list.push(sub_node);
-
 				} 
-
 			} 
 			
 			if(relevant_types.indexOf(node.type(currentNode))!=-1){
@@ -197,9 +189,8 @@ function AddInBetween_process(POURCENTAGE){
 		for(var i = 0 ; i<column_list.length;i++){
 			
 				if(relevant_types.indexOf(column.type(column_list[i]))!=-1){
-					
+
 					filtered_list.push(column_list[i])
-					
 					//MessageLog.trace(column.type(column_list[i]));
 					
 				}
@@ -207,7 +198,6 @@ function AddInBetween_process(POURCENTAGE){
 		
 		return filtered_list;
 	}
-	
 
 	function fetch_colummns(nodes_list){
 		
@@ -215,48 +205,33 @@ function AddInBetween_process(POURCENTAGE){
 		
 		var columns_list = Array();
 		
-		
-		
+
 		for(var n = 0 ; n < nodes_list.length; n++){ 
-		
-		
+
 			var currentNode = nodes_list[n];
-			
 			var linked_columns = get_linked_columns(currentNode);
-			
 			if(linked_columns.length >0){
 				columns_list = columns_list.concat(linked_columns);
 			}
 		}
-		
-		
 		return unique_array(columns_list); 
-		
 	}
-	
-	
-	
+
 	
 	function treat_columns(_frame,column_list,factor){
-		
-		//MessageLog.trace(arguments.callee.name)
-		//MessageLog.trace(column_list)
 		
 		for(var c = 0 ;c < column_list.length; c++){ 
 			
 			var current_column = column_list[c]
 			add_inBetween_key(_frame,column_list[c],factor);
-			
 		}
-		
 		return true
-		
 	}
 
 	
 	function get_next_bezierkey(_column,_frame){
 		
-		//MessageLog.trace(arguments.callee.name)
+		MessageLog.trace(arguments.callee.name)
 
 		var key = false;
 		var s = 0;
@@ -266,23 +241,17 @@ function AddInBetween_process(POURCENTAGE){
 					
 					//MessageLog.trace(f);
 					key = column.getEntry(_column,s,f)
+					MessageLog.trace(key)
 					return key;
-					
 				}
-			
-					
 		}
-		
+		MessageLog.trace(key)
 		return key;
-		
-		
-
 	}
 	
 	function get_previous_bezierkey(_column,_frame){
 		
 		//MessageLog.trace(arguments.callee.name)
-
 		var key = false;
 		var s = 0;
 		
@@ -293,18 +262,11 @@ function AddInBetween_process(POURCENTAGE){
 					//MessageLog.trace(f);
 					key = column.getEntry(_column,s,f)
 					return key;
-					
 				}
-			
-	
 		}
-		
 		return key;
-		
-		
 
 	}
-	
 	
 	function get_next_3Dkey(_column,_frame){
 		
@@ -318,23 +280,13 @@ function AddInBetween_process(POURCENTAGE){
 				
 
 				 if(column.isKeyFrame(_column,s,f)){
-		
 					for (s = s ; s<sub_column;s++){
-
 						key.push(column.getEntry(_column,s,f))
-
 					}
-					
 					return key;
-	
 				}
-					
 		}
-		
 		return false;
-		
-		
-
 	}
 	
 	function get_previous_3Dkey(_column,_frame){
@@ -356,17 +308,10 @@ function AddInBetween_process(POURCENTAGE){
 					}
 					
 					return key;
-	
 				}
-					
 		}
-		
 		return false;
-		
-
 	}
-	
-	
 
 	
 	function float_to_tb_coords(tbv){
@@ -380,11 +325,9 @@ function AddInBetween_process(POURCENTAGE){
 			
 			result = "-"+result;
 		}
-		
 		//MessageLog.trace(" from "+tbv+"  to   "+result)
 		
 		return parseFloat(result)
-		
 	}
 		
 	function add_inBetween_key(_frame,_column,_ratio){
@@ -398,25 +341,18 @@ function AddInBetween_process(POURCENTAGE){
 			if(column.type(_column) =="3DPATH"){
 				
 				//MessageLog.trace("3DPATH")
-				
 				next_key = get_next_3Dkey(_column,CURRENT_FRAME)
 				previous_key = get_previous_3Dkey(_column,CURRENT_FRAME)
 				
 				if(next_key !== false && previous_key !==false){
 					
 					new_key = interpolate_3d(previous_key,next_key,_ratio);
-				
 					column.setEntry(_column,1,CURRENT_FRAME,new_key[0]);
 					column.setEntry(_column,2,CURRENT_FRAME,new_key[1]);
 					column.setEntry(_column,3,CURRENT_FRAME,new_key[2]);				
-					
 				}
 				
-
-				
 			}else{
-				
-				//MessageLog.trace("BEZIER")
 				
 				next_key = get_next_bezierkey(_column,CURRENT_FRAME)
 				previous_key = get_previous_bezierkey(_column,CURRENT_FRAME)
@@ -427,11 +363,7 @@ function AddInBetween_process(POURCENTAGE){
 					new_key = interpolate_bezier(previous_key,next_key,_ratio)
 					column.setEntry(_column,0,CURRENT_FRAME,new_key);
 					//column.setEntry(_column,1,CURRENT_FRAME,new_key);
-					
 				}
-				
-				
-				
 			}
 			
 			column.setKeyFrame(_column,CURRENT_FRAME);
@@ -440,12 +372,9 @@ function AddInBetween_process(POURCENTAGE){
 			//MessageLog.trace("previous "+previous_key)
 			//MessageLog.trace("next "+next_key)
 			//MessageLog.trace("interpo "+new_key)
-			
 			return new_key;
-			
 	}
 	
-	 
 	function interpolate_bezier (_valueA,_valueB,_ratio){
 		
 			var  A = parseFloat(_valueA);
@@ -453,7 +382,6 @@ function AddInBetween_process(POURCENTAGE){
 			var result = A + ((B-A)/_ratio);
 			
 			return result;
-		
 	}
 	
 	function interpolate_3d (array1,array2,_ratio){
@@ -482,45 +410,31 @@ function AddInBetween_process(POURCENTAGE){
 		//MessageLog.trace("new 3dpoint  "+result);
 			
 		return result;
-		
 	}
 
 	function toonboom_coords_to_float(tbv){
 		
 		var result = 0
-		
 		result= tbv.split(" ")[0];
 		var letter = tbv.split(" ")[1];
-		
-		
 		
 		if(letter == "W" || letter =="B" || letter =="S"){
 			
 			result = "-"+result;
 		}
-		
-		
 		result = parseFloat(result)
-		
-		//MessageLog.trace(" from "+tbv+"  to   "+result)
 
 		return result
-		
 	}	
 	
 	function get_linked_columns(_node){
 		
 		var node_columns = Array();
-	
 		var attrList = getAttributesNameList (_node);
 		
 		for (var i=0; i<attrList.length; i++){
 			
 			var attribute_name = attrList[i]
-			
-			//MessageLog.trace("*****"+attribute_name);
-			
-
 			
 			var linked_column = node.linkedColumn(_node,attribute_name)
 			
@@ -530,19 +444,15 @@ function AddInBetween_process(POURCENTAGE){
 
 				node_columns.push(linked_column);
 			}
-			
 		}
-		
 		return node_columns;
-		
-		
+
 	}
 	
 
 	function getAttributesNameList (snode){
 		
 		//MessageLog.trace(arguments.callee.name)
-		
 		var attrList = node.getAttrList(snode, frame.current(),"");
 		var name_list= Array();
 		
@@ -560,20 +470,12 @@ function AddInBetween_process(POURCENTAGE){
 					name_list.push(sub_attr_name);
 				}
 			}
-			
 		}
-		
 		//MessageLog.trace(name_list)
-		
 		return name_list;
-		
 	}
 	
-	
-	
-	
 	function unique_array(arr){
-		
 		var unique_array = Array();
 		for(var i = 0 ; i<arr.length;i++){
 			if(unique_array.indexOf(arr[i])==-1){
@@ -581,10 +483,7 @@ function AddInBetween_process(POURCENTAGE){
 			}
 		}
 		return unique_array;
-		
 	}
-		
-	
 }
 
 
